@@ -45,7 +45,6 @@
   <ItemGroup>
     <Compile Include="Account.cs" />
     <Compile Include="BankingUI.cs" />
-    <Compile Include="Utilities.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
