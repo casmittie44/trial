@@ -8,7 +8,10 @@ namespace BankingUI
 {
 	public static class UI
 	{
-        private static User currentUser;
+        // User currently logged in (may be null)
+        private static User currentUser;  
+
+        // List of users which have been created in this session
 		private static List<User> users = new List<User>();
 
         public static void Main()
@@ -346,6 +349,7 @@ namespace BankingUI
             // Insert code here to check if we are going to overdraw the account
             try
             {
+               // currentUser.Withdraw(amount, choice);
                 choice.Withdraw(Convert.ToDouble(amount));
             }
             catch (Exception ex)

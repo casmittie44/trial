@@ -8,9 +8,9 @@ namespace Trial
 	public class User
 	{
 		public string userName;
-		private byte[] passwordHash;
 		private List<Account> accounts;
-        private byte[] salt;
+        private byte[] salt; // Salt value to be used in hashing password
+        private byte[] passwordHash;
 
 		public bool Login(string enteredPassword)
 		{
@@ -65,11 +65,12 @@ namespace Trial
         }
 
 		/// <summary>
-		/// Withdraw the specified non-negative amount from the account given by accountIndex.
+		/// Withdraw the specified non-negative amount from the account given by accountIndex. Throws an exception
+        /// if the amount entered is 
 		/// </summary>
 		/// <param name="amount">Amount.</param>
 		/// <param name="accountIndex">Account index.</param>
-		public int Withdraw(int amount, int accountIndex)
+		public int Withdraw(double amount, int accountIndex)
 		{
 			if (accountIndex > accounts.Count)
 				throw new Exception ("Error: attempted to access an account which does not exist.");
