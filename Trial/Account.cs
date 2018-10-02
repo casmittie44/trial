@@ -7,12 +7,20 @@ namespace Trial
 {
     public class Account
     {
+        #region Fields
         public string name;
         public AccountType type;
-        private byte[] passwordHash;
-        private int balance; // The balance is stored internally as an integer, to avoid floating-point errors
-        private List<Transaction> transactionRecord;
 
+        // The passwordHash of the associated User class; this is used to give
+        // another level of authentication to access the Account
+        private byte[] passwordHash;
+
+        // The balance is stored internally as an integer, to avoid floating-point errors
+        private int balance; 
+        private List<Transaction> transactionRecord;
+        #endregion
+
+        #region Constructors
         public Account(string name, AccountType type, byte[] passwordHash)
         {
             this.name = name;
@@ -21,14 +29,13 @@ namespace Trial
             this.transactionRecord = new List<Transaction>();
             this.passwordHash = passwordHash;
         }
+        private Account() { }
+        #endregion
 
-        private Account();
-
+        #region Public Methods
         /// <summary>
         /// Deposit a dollar amount into account
         /// </summary>
-        /// <param name="amount"></param>
-        /// <returns></returns>
         public int Deposit(double amount, byte[] passwordHash)
         {
             if(!Authenticate(passwordHash))
@@ -39,7 +46,7 @@ namespace Trial
 
             int amountInCents = Convert.ToInt32(amount * 100.0);
             balance += amountInCents;
-            var transaction = new Transaction(-1 * amountInCents, DateTime.Now);
+            var transaction = new Transaction(amountInCents, DateTime.Now);
             transactionRecord.Add(transaction);
             return amountInCents;
         }
@@ -86,25 +93,29 @@ namespace Trial
 
             if (Authenticate(hash))
             {
-                sb.AppendFormat("{0, -10} {1, -10} {2, -20}", "Deposits", "Withdrawals", "Date\n");
+                sb.AppendFormat("{0, -15} {1, -15} {2, -30}\n", "Deposits", "Withdrawals", "Date");
                 foreach (var transaction in transactionRecord)
                 {
                     if (transaction.amount > 0)
-                        sb.AppendFormat("{0, -10}---{1, -20}\n", (ToDollars(transaction.amount)).ToString(), transaction.time.ToString());
+                        sb.AppendFormat("{0, -15} {1, -15} {2, -30}\n", (ToDollars(transaction.amount)).ToString(),
+                            "-----------", transaction.time.ToString());
 
+                    // If amount is negative, it was a withdrawal, so put it in withdrawal column
                     if (transaction.amount <= 0)
-                        sb.AppendFormat("----{0, 10}----{1, -20}\n", (ToDollars(transaction.amount).ToString()), transaction.time.ToString());
+                        sb.AppendFormat("{0, -15} {1, -15} {2, -30}\n", "-----------",
+                            (ToDollars(transaction.amount).ToString()), transaction.time.ToString());
                 }
 
                 sb.AppendFormat("Current Balance: {0}", ToDollars(balance));
-
             }
 
             else
                 sb.AppendLine("Access denied.");
                 return sb.ToString();
         }
+        #endregion
 
+        #region Private Methods
         /// <summary>
         /// Compares the argument password to the stored field passwordHash.
         /// If they do not have the same contents, returns false;
@@ -127,8 +138,12 @@ namespace Trial
         {
             return cents / 100.0;
         }
+        #endregion
     }
-
+    
+    /// <summary>
+    /// Encapsulates an account transaction
+    /// </summary>
     public struct Transaction
     {        
         public int amount;
